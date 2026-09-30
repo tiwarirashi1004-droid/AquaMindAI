@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#087f8c">
+<title>AquaMind AI — Water Conservation App</title>
+<style>
+:root{
+ --teal:#087f8c;--teal2:#0aa6a6;--blue:#2f80ed;--green:#27ae60;
+ --ink:#14343b;--muted:#6b858b;--bg:#f3fbfa;--card:#fff;--line:#dceceb;
+ --danger:#e65b5b;--gold:#e9a82d;--shadow:0 12px 35px rgba(13,82,91,.10);
+}
+*{box-sizing:border-box}body{margin:0;background:#dceeed;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+button,input,select{font:inherit}button{cursor:pointer;border:0}
+.app{width:min(430px,100vw);min-height:100vh;margin:auto;background:var(--bg);position:relative;overflow:hidden}
+header{padding:22px 20px 12px;background:linear-gradient(145deg,#087f8c,#0ba4a0);color:white;border-radius:0 0 28px 28px}
+.top{display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;font-size:20px;letter-spacing:-.4px}.tag{font-size:11px;opacity:.8}
+.avatar{width:38px;height:38px;border-radius:50%;background:#ffffff33;display:grid;place-items:center;font-weight:800;border:1px solid #ffffff55}
+.content{padding:18px 17px 100px}.screen{display:none}.screen.active{display:block}
+h1{font-size:25px;margin:3px 0 5px;letter-spacing:-.7px}h2{font-size:18px;margin:0 0 12px}.sub{color:var(--muted);font-size:13px;line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:15px;box-shadow:var(--shadow)}
+.hero{margin-top:14px;background:linear-gradient(135deg,#075f6b,#0aa6a6);color:white;border:0;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;right:-35px;top:-50px;background:#ffffff12}
+.big{font-size:35px;font-weight:800;letter-spacing:-1.5px}.unit{font-size:13px;opacity:.85}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.metric{font-size:21px;font-weight:800;margin-top:5px}.label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.icon{width:38px;height:38px;border-radius:13px;background:#e8f7f6;display:grid;place-items:center;font-size:19px}.green{color:var(--green)}.blue{color:var(--blue)}.orange{color:var(--gold)}
+.section{margin:20px 0 10px;display:flex;justify-content:space-between;align-items:center}.section h2{margin:0}
+.btn{width:100%;padding:13px 16px;border-radius:14px;background:var(--teal);color:#fff;font-weight:750;box-shadow:0 8px 18px #087f8c2c}.btn.secondary{background:#e7f6f5;color:var(--teal);box-shadow:none}.btn.danger{background:#fff0f0;color:#c74747;box-shadow:none}
+.fab{position:fixed;z-index:10;bottom:78px;right:max(18px,calc((100vw - 430px)/2 + 18px));width:56px;height:56px;border-radius:18px;background:var(--teal);color:white;font-size:27px;box-shadow:0 12px 25px #087f8c55}
+.bottom{position:fixed;z-index:9;bottom:0;width:min(430px,100vw);height:72px;background:#ffffffee;backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px env(safe-area-inset-bottom)}
+.nav{background:none;color:#7b9196;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:4px 10px}.nav span:first-child{font-size:20px}.nav.active{color:var(--teal)}
+.form{display:grid;gap:11px}.field{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px 13px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}.field input,.field select{width:100%;border:0;outline:0;color:var(--ink);background:transparent;font-weight:650}
+.alert{padding:13px;border-radius:16px;background:#fff5e6;border:1px solid #f5d7a2;color:#855d1d;font-size:12px;line-height:1.45}.success{background:#e9f8ef;border-color:#bfe8ce;color:#287a49}.dangerbox{background:#fff0f0;border-color:#f1c2c2;color:#a63f3f}
+.progress{height:9px;background:#e8f1f1;border-radius:20px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#087f8c,#35c58a);border-radius:20px}
+.chart{height:150px;display:flex;align-items:end;gap:9px;padding-top:12px}.barcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:end}.barfill{width:70%;max-width:28px;border-radius:8px 8px 3px 3px;background:linear-gradient(#25b9b0,#087f8c);min-height:8px}.barcol small{font-size:9px;color:var(--muted)}
+.donut{width:118px;height:118px;border-radius:50%;background:conic-gradient(#087f8c 0 40%,#2f80ed 40% 66%,#27ae60 66% 84%,#e9a82d 84% 100%);display:grid;place-items:center}.donut:after{content:"";width:72px;height:72px;background:white;border-radius:50%}.legend{display:grid;gap:7px;font-size:11px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border-radius:99px;background:#fff5d9;color:#9a6814;font-size:11px;font-weight:800}
+.hidden{display:none!important}.center{text-align:center}.mt{margin-top:12px}.small{font-size:11px}.value{font-weight:800}.pill{padding:6px 9px;background:#eaf7f6;color:var(--teal);border-radius:99px;font-size:10px;font-weight:800}
+.login{min-height:100vh;padding:36px 22px;background:linear-gradient(155deg,#075f6b,#0aa6a6);color:white}.login .logo{font-size:54px}.login h1{font-size:34px}.loginbox{margin-top:30px;background:white;color:var(--ink);padding:22px;border-radius:25px;box-shadow:0 20px 50px #063d4550}.loginbox .field{background:#f7fbfb}.quote{font-size:13px;opacity:.85;line-height:1.6}
+.toast{position:fixed;z-index:50;left:50%;bottom:88px;transform:translateX(-50%);background:#14343b;color:#fff;padding:11px 15px;border-radius:12px;font-size:12px;display:none;box-shadow:var(--shadow)}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="login" class="login screen">
+  <div class="logo">💧</div><div class="brand">AquaMind AI</div>
+  <h1>Every drop counts.<br>Every decision matters.</h1>
+  <p class="quote">An intelligent household water conservation assistant that turns everyday usage into actionable insights.</p>
+  <div class="loginbox">
+    <h2>Welcome back</h2>
+    <div class="form">
+      <div class="field"><label>Email</label><input id="email" value="demo@aquamind.ai"></div>
+      <div class="field"><label>Password</label><input type="password" value="123456"></div>
+      <button class="btn" onclick="enterApp()">Enter AquaMind</button>
+      <button class="btn secondary" onclick="enterApp()">Continue as Demo User</button>
+    </div>
+  </div>
+</div>
+
+<div id="main" class="screen active">
+<header><div class="top"><div><div class="brand">💧 AquaMind AI</div><div class="tag">Smart water. Smarter living.</div></div><div class="avatar">R</div></div></header>
+
+<div class="content">
+<section id="home" class="screen active">
+  <div class="row"><div><div class="sub">Good evening, Rashi 👋</div><h1>Your water, understood.</h1></div><span class="pill">● Live Demo</span></div>
+  <div class="card hero"><div class="label" style="color:#d8ffff">Today's consumption</div><div class="big" id="dashTotal">420 <span class="unit">L</span></div><div class="sub" style="color:#d8ffff">↓ 9% lower than your recent average</div></div>
+  <div class="grid mt">
+    <div class="card"><div class="row"><div class="icon green">💧</div><span class="badge">+12%</span></div><div class="metric green" id="dashSaved">65 L</div><div class="label">Water saved</div></div>
+    <div class="card"><div class="row"><div class="icon blue">★</div><span class="badge" style="background:#eaf2ff;color:#2868ba">Excellent</span></div><div class="metric blue" id="dashScore">92/100</div><div class="label">Water health</div></div>
+  </div>
+  <div class="section"><h2>Monthly target</h2><span class="sub" id="targetText">12,600 / 15,000 L</span></div>
+  <div class="card"><div class="progress"><div class="bar" id="targetBar" style="width:84%"></div></div><div class="row mt"><span class="small">84% of target</span><span class="small green">2,400 L remaining</span></div></div>
+  <div class="section"><h2>AI Coach</h2><span class="pill">✦ Personalized</span></div>
+  <div class="card"><div class="row"><div class="icon">🤖</div><div style="flex:1"><b id="coachTitle">Your shower is today's biggest opportunity.</b><div class="sub mt" id="coachText">Cutting 2 minutes can save roughly 600–900 L/month.</div></div></div></div>
+  <div class="section"><h2>Weekly trend</h2><span class="sub">Last 7 days</span></div>
+  <div class="card"><div class="chart" id="homeChart"></div></div>
+</section>
+
+<section id="audit" class="screen">
+  <div class="sub">Smart Water Audit</div><h1>Tell us about today.</h1><p class="sub">Enter household activities and AquaMind estimates consumption, savings and your conservation score.</p>
+  <div class="form mt">
+    <div class="field"><label>🚿 Shower duration (minutes)</label><input id="shower" type="number" value="8" min="0"></div>
+    <div class="field"><label>🧺 Washing machine cycles</label><input id="wash" type="number" value="1" min="0"></div>
+    <div class="field"><label>🍽 Dishwashing (cycles)</label><input id="dish" type="number" value="1" min="0"></div>
+    <div class="field"><label>🌱 Gardening (minutes)</label><input id="garden" type="number" value="10" min="0"></div>
+    <div class="field"><label>🚽 Toilet flushes</label><input id="flush" type="number" value="8" min="0"></div>
+    <div class="field"><label>🚗 Car wash (times)</label><input id="car" type="number" value="0" min="0"></div>
+    <div class="field"><label>🍳 Cooking (times)</label><input id="cook" type="number" value="2" min="0"></div>
+    <div class="field"><label>Optional: today's meter usage (L)</label><input id="meter" type="number" placeholder="Leave blank for activity estimate"></div>
+    <button class="btn" onclick="analyze()">Analyze Water Usage ✦</button>
+  </div>
+  <div id="auditResult" class="card mt hidden"></div>
+</section>
+
+<section id="analytics" class="screen">
+  <div class="sub">Analytics</div><h1>Your water story.</h1>
+  <div class="grid mt">
+    <div class="card"><div class="label">7-day average</div><div class="metric">435 L</div><div class="small green">↓ 7.4%</div></div>
+    <div class="card"><div class="label">Projected month</div><div class="metric" id="projected">13,050 L</div><div class="small green">Within target</div></div>
+  </div>
+  <div class="section"><h2>Consumption trend</h2></div><div class="card"><div class="chart" id="analyticsChart"></div></div>
+  <div class="section"><h2>Where water goes</h2></div>
+  <div class="card row"><div class="donut"></div><div class="legend"><span><i class="dot" style="background:#087f8c"></i>Bathroom 40%</span><span><i class="dot" style="background:#2f80ed"></i>Kitchen 26%</span><span><i class="dot" style="background:#27ae60"></i>Garden 18%</span><span><i class="dot" style="background:#e9a82d"></i>Other 16%</span></div></div>
+  <div class="section"><h2>Impact</h2></div>
+  <div class="card"><div class="row"><span class="sub">Monthly saving potential</span><b class="green">3,240 L</b></div><div class="row mt"><span class="sub">Annual saving potential</span><b class="green">38,880 L</b></div></div>
+</section>
+
+<section id="insights" class="screen">
+  <div class="sub">AquaMind AI Coach</div><h1>Insights that act.</h1>
+  <div class="card hero"><div class="label" style="color:#d8ffff">AI opportunity</div><div class="metric" style="font-size:25px">Save up to 3,240 L/month</div><div class="sub mt" style="color:#d8ffff">by changing three small household habits.</div></div>
+  <div class="section"><h2>Personalized recommendations</h2></div>
+  <div class="card mt"><div class="row"><div class="icon">🚿</div><div style="flex:1"><b>Shorter showers</b><div class="sub">Reduce shower time by 2 minutes.</div></div><span class="green value">+900 L</span></div></div>
+  <div class="card mt"><div class="row"><div class="icon">🧺</div><div style="flex:1"><b>Full laundry loads</b><div class="sub">Avoid half-load cycles.</div></div><span class="green value">+560 L</span></div></div>
+  <div class="card mt"><div class="row"><div class="icon">🌱</div><div style="flex:1"><b>Evening gardening</b><div class="sub">Water after sunset to reduce evaporation.</div></div><span class="green value">+480 L</span></div></div>
+  <div class="section"><h2>Leak watch</h2></div>
+  <div class="alert success">✓ No strong leakage pattern detected. Keep monitoring unusual overnight usage.</div>
+  <div class="section"><h2>Water Impact Simulator</h2></div>
+  <div class="card"><p class="sub">Drag the habit slider to see the estimated impact.</p><label class="small">Reduce shower time: <b id="simVal">2</b> min</label><input id="sim" type="range" min="0" max="5" value="2" style="width:100%" oninput="simulate()"><div class="row mt"><span class="sub">Estimated monthly saving</span><b class="green" id="simSave">600 L</b></div></div>
+</section>
+
+<section id="rain" class="screen">
+  <div class="sub">Sustainability Tools</div><h1>Rainwater Harvesting</h1>
+  <p class="sub">Estimate how much rainwater your roof could capture annually.</p>
+  <div class="form mt">
+    <div class="field"><label>Roof area (m²)</label><input id="roof" type="number" value="100"></div>
+    <div class="field"><label>Annual rainfall (mm)</label><input id="rainfall" type="number" value="650"></div>
+    <div class="field"><label>Collection efficiency (%)</label><input id="eff" type="number" value="80"></div>
+    <button class="btn" onclick="rainCalc()">Calculate Harvest 💧</button>
+  </div>
+  <div id="rainResult" class="card hero mt"></div>
+  <div class="card mt"><b>Why it matters</b><p class="sub">Harvested rainwater can reduce dependence on treated municipal water and support groundwater recharge when appropriately managed.</p></div>
+</section>
+
+<section id="rewards" class="screen">
+  <div class="sub">Your impact</div><h1>Water Guardian 🏆</h1>
+  <div class="card hero"><div class="label" style="color:#d8ffff">Eco points</div><div class="big">1,280</div><div class="sub" style="color:#d8ffff">320 points to the next level</div></div>
+  <div class="section"><h2>Your badges</h2></div>
+  <div class="grid"><div class="card center"><div style="font-size:32px">💧</div><b>Drop Saver</b><div class="small sub">Saved 1,000 L</div></div><div class="card center"><div style="font-size:32px">🌿</div><b>Eco Habit</b><div class="small sub">7-day streak</div></div></div>
+  <div class="section"><h2>Weekly challenge</h2></div>
+  <div class="card"><div class="row"><b>Save 500 L this week</b><span class="pill">360/500</span></div><div class="progress mt"><div class="bar" style="width:72%"></div></div><button class="btn secondary mt" onclick="toast('Challenge progress updated!')">Log today's saving</button></div>
+  <div class="section"><h2>Community impact</h2></div>
+  <div class="card"><div class="metric green">18.4M L</div><div class="sub">saved by the AquaMind community</div></div>
+</section>
+
+<section id="profile" class="screen">
+  <div class="sub">Account</div><h1>Rashi's Profile</h1>
+  <div class="card row"><div class="avatar" style="background:#e8f7f6;color:var(--teal);width:52px;height:52px">R</div><div style="flex:1;margin-left:12px"><b>Rashi</b><div class="sub">Demo household</div></div><span class="badge">Guardian</span></div>
+  <div class="section"><h2>Household</h2></div>
+  <div class="card"><div class="row"><span class="sub">Family members</span><b>4</b></div><div class="row mt"><span class="sub">Monthly target</span><b>15,000 L</b></div><div class="row mt"><span class="sub">City</span><b>Delhi</b></div></div>
+  <div class="section"><h2>App</h2></div>
+  <div class="card"><div class="row"><b>Notifications</b><span class="pill">ON</span></div><hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><div class="row"><b>Data & Privacy</b><span>›</span></div><hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><div class="row"><b>Help & Support</b><span>›</span></div></div>
+  <button class="btn danger mt" onclick="location.reload()">Reset Demo</button>
+</section>
+</div>
+
+<button class="fab" onclick="go('audit')">＋</button>
+<nav class="bottom">
+<button class="nav active" data-go="home" onclick="go('home')"><span>⌂</span>Home</button>
+<button class="nav" data-go="audit" onclick="go('audit')"><span>💧</span>Audit</button>
+<button class="nav" data-go="analytics" onclick="go('analytics')"><span>◔</span>Analytics</button>
+<button class="nav" data-go="rewards" onclick="go('rewards')"><span>🏆</span>Rewards</button>
+<button class="nav" data-go="profile" onclick="go('profile')"><span>●</span>Profile</button>
+</nav>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+function enterApp(){ $('login').classList.remove('active'); $('main').classList.add('active'); }
+function go(id){
+ document.querySelectorAll('#main .content > .screen').forEach(s=>s.classList.remove('active'));
+ $(id).classList.add('active');
+ document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('active',n.dataset.go===id));
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function n(id){return Math.max(0,Number($(id).value)||0)}
+function analyze(){
+ let shower=n('shower'),wash=n('wash'),dish=n('dish'),garden=n('garden'),flush=n('flush'),car=n('car'),cook=n('cook'),meter=n('meter');
+ let total=meter>0?meter:(shower*10+wash*70+dish*25+garden*12+flush*6+car*120+cook*12);
+ let baseline=470, saved=Math.max(0,baseline-total), score=Math.max(50,Math.min(100,Math.round(100-(total-baseline)*.12)));
+ let top=[['Shower',shower*10],['Laundry',wash*70],['Dishwashing',dish*25],['Gardening',garden*12],['Toilet',flush*6],['Car wash',car*120],['Cooking',cook*12]].sort((a,b)=>b[1]-a[1])[0];
+ let predicted=Math.round(total*30);
+ $('dashTotal').innerHTML=`${Math.round(total)} <span class="unit">L</span>`;
+ $('dashSaved').textContent=Math.round(saved)+' L';
+ $('dashScore').textContent=score+'/100';
+ $('projected').textContent=predicted.toLocaleString()+' L';
+ $('targetText').textContent=predicted.toLocaleString()+' / 15,000 L';
+ $('targetBar').style.width=Math.min(100,predicted/15000*100)+'%';
+ $('auditResult').classList.remove('hidden');
+ $('auditResult').innerHTML=`<div class="row"><div><div class="label">Estimated daily consumption</div><div class="big" style="color:var(--teal);font-size:30px">${Math.round(total)} L</div></div><span class="badge">${score}/100</span></div>
+ <div class="section"><h2>AI analysis</h2></div>
+ <div class="alert ${total>550?'dangerbox':'success'}">${total>550?'⚠ Higher-than-usual consumption detected. Check your highest-use activity and unusual usage periods.':'✓ Great! Your estimated usage is within a conservation-friendly range.'}</div>
+ <div class="row mt"><span class="sub">Highest-use activity</span><b>${top[0]} (${Math.round(top[1])} L)</b></div>
+ <div class="row mt"><span class="sub">Projected monthly usage</span><b>${predicted.toLocaleString()} L</b></div>
+ <button class="btn mt" onclick="go('insights')">View AI Recommendations →</button>`;
+ $('coachTitle').textContent=top[0]==='Shower'?'Your shower is today’s biggest opportunity.':`${top[0]} is your biggest water-use opportunity.`;
+ $('coachText').textContent=`Reducing this activity can improve your score and save water every month.`;
+ toast('Water usage analyzed successfully ✦');
+}
+function rainCalc(){
+ let roof=n('roof'),rain=n('rainfall'),eff=n('eff')/100,harvest=roof*rain*eff;
+ let money=harvest*0.02;
+ $('rainResult').innerHTML=`<div class="label" style="color:#d8ffff">Estimated annual harvest</div><div class="big">${Math.round(harvest).toLocaleString()} <span class="unit">L</span></div><div class="sub mt" style="color:#d8ffff">Potential annual water-value offset ≈ ₹${Math.round(money).toLocaleString()}</div>`;
+}
+function simulate(){let x=n('sim');$('simVal').textContent=x;$('simSave').textContent=(x*300)+' L'}
+function toast(t){let e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>e.style.display='none',2200)}
+function makeBars(id,vals,labels){let el=$(id),max=Math.max(...vals);el.innerHTML=vals.map((v,i)=>`<div class="barcol"><div class="barfill" style="height:${Math.max(12,v/max*115)}px"></div><small>${labels[i]}</small></div>`).join('')}
+makeBars('homeChart',[390,420,450,410,470,440,420],['M','T','W','T','F','S','S']);
+makeBars('analyticsChart',[390,420,450,410,470,440,420],['M','T','W','T','F','S','S']);
+rainCalc();
+</script>
+</body>
+</html>
